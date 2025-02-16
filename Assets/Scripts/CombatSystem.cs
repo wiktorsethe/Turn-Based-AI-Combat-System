@@ -7,9 +7,8 @@ public class CombatSystem : MonoBehaviour
     private static GameObject _combatPrefab;
     private static Combat _combat;
     
-    public static void CreateBattle()
+    public static void CreateBattle(CombatUnit[] combatUnits)
     {
-        Debug.Log("Creating Battle");
         _combatPrefab = Resources.Load<GameObject>("Combat");
         if (_combat == null) 
         {
@@ -20,5 +19,23 @@ public class CombatSystem : MonoBehaviour
         {
             _combat.gameObject.SetActive(true);
         }
+        
+        List<CombatUnit> playerTeam = new List<CombatUnit>();
+        List<CombatUnit> enemyTeam = new List<CombatUnit>();
+
+        foreach (CombatUnit combatUnit in combatUnits)
+        {
+            if (combatUnit.UnitCategory == UnitType.Enemy)
+            {
+                enemyTeam.Add(combatUnit);
+            }
+            else
+            {
+                playerTeam.Add(combatUnit);
+            }
+        }
+        
+        _combat.SpawnUnits(playerTeam, enemyTeam);
+        //_combat.SpawnUnit(combatUnits[0]); //TODO: wystawic wszystkich z listy podzielonych na miejsca i druzyny
     }
 }

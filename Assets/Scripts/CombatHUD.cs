@@ -13,7 +13,7 @@ public class CombatHUD : MonoBehaviour
     [SerializeField] private GameObject actionButtonPrefab;
     private GameObject _unitView;
     private GameObject _actionsView;
-    private CombatUnit _unit;
+    private CombatUnitHUD _unitHUD;
     private bool _isMovesViewActive;
 
     private void Start()
@@ -21,7 +21,7 @@ public class CombatHUD : MonoBehaviour
         _isMovesViewActive = false;
     }
 
-    public void ShowUnitView(CombatUnit unit)
+    public void ShowUnitView(CombatUnitHUD unit)
     {
         if(!_unitView)
         {
@@ -43,10 +43,10 @@ public class CombatHUD : MonoBehaviour
         }
 
 
-        // _unitView.transform.Find("UnitNameText").GetComponent<TMP_Text>().text =
-        //     unit.unitName;
-        // _unitView.transform.Find("UnitHPText").GetComponent<TMP_Text>().text =
-        //     unit.currentHealth + "/" + unit.maxHealth;
+        _unitView.transform.Find("UnitNameText").GetComponent<TMP_Text>().text =
+            unit.AssignedUnit.Name;
+        _unitView.transform.Find("UnitHPText").GetComponent<TMP_Text>().text =
+            unit.AssignedUnit.Health + "/" + unit.AssignedUnit.Health; //TODO: zalatwic sprawe currentHealth
     }
     
     public void HideUnitView()
@@ -54,7 +54,7 @@ public class CombatHUD : MonoBehaviour
         _unitView.SetActive(false);
     }
 
-    public void ShowActionsView(CombatUnit unit)
+    public void ShowActionsView(CombatUnitHUD unit)
     {
         if(_unitView) _unitView.SetActive(false);
         
@@ -76,7 +76,7 @@ public class CombatHUD : MonoBehaviour
             _actionsView.transform.position = mousePosition;
         }
 
-        _unit = unit;
+        _unitHUD = unit;
         _isMovesViewActive = true;
 
         AddButton();
@@ -97,7 +97,7 @@ public class CombatHUD : MonoBehaviour
 
             _isMovesViewActive = false;
             _actionsView.SetActive(false);
-            _unit.transform.GetComponent<Collider2D>().enabled = true;
+            _unitHUD.transform.GetComponent<Collider2D>().enabled = true;
         }
     }
     

@@ -2,32 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CombatUnit : MonoBehaviour
+public enum UnitType
 {
-    private CombatHUD _combatHUD;
-    [SerializeField] private Canvas canvas;
-    private void Start()
-    {
-        _combatHUD = FindObjectOfType(typeof(CombatHUD)) as CombatHUD;
-        canvas.worldCamera = Camera.main;
-    }
-    private void OnMouseEnter()
-    {
-        Debug.Log("Mouse Enter");
-        _combatHUD.ShowUnitView(this);
-    }
+    Player,
+    Ally,
+    Enemy
+}
 
-    private void OnMouseExit()
-    {
-        Debug.Log("Mouse Exit");
-        _combatHUD.HideUnitView();
-    }
+public enum ClassType
+{
+    Warrior,
+    Mage,
+    Hunter
+}
+
+public class CombatUnit
+{
+    public string Name { get; private set; }
+    public UnitType UnitCategory { get; private set; }
+    public ClassType UnitClass { get; private set; }
+    public int Health { get; private set; }
+    public int Attack { get; private set; }
+    public int Defense { get; private set; }
+    public int Speed { get; private set; }
     
-    private void OnMouseDown()
+    public CombatUnit(string name, UnitType unitCategory, ClassType unitClass, int health, int attack)
     {
-        if(_combatHUD.GetMovesViewActivity()) 
-            _combatHUD.HideUnitView();
-        _combatHUD.ShowActionsView(this);
-        GetComponent<BoxCollider2D>().enabled = false;
+        Name = name;
+        UnitCategory = unitCategory;
+        UnitClass = unitClass;
+        Health = health;
+        Attack = attack;
     }
 }
