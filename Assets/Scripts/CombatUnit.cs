@@ -27,7 +27,7 @@ public class CombatUnit : MonoBehaviour
     {
         if(_combatHUD.GetMovesViewActivity()) 
             _combatHUD.HideUnitView();
-        _combatHUD.ShowMovesView(this);
+        _combatHUD.ShowActionsView(this);
         GetComponent<BoxCollider2D>().enabled = false;
     }
 }

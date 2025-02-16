@@ -3,13 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class CombatHUD : MonoBehaviour
 {
     [SerializeField] private GameObject unitViewPrefab;
-    [SerializeField] private GameObject movesViewPrefab;
+    [SerializeField] private GameObject actionsViewPrefab;
+    [SerializeField] private GameObject actionButtonPrefab;
     private GameObject _unitView;
-    private GameObject _movesView;
+    private GameObject _actionsView;
     private CombatUnit _unit;
     private bool _isMovesViewActive;
 
@@ -51,44 +54,49 @@ public class CombatHUD : MonoBehaviour
         _unitView.SetActive(false);
     }
 
-    public void ShowMovesView(CombatUnit unit)
+    public void ShowActionsView(CombatUnit unit)
     {
         if(_unitView) _unitView.SetActive(false);
         
-        if(!_movesView)
+        if(!_actionsView)
         {
             if (Camera.main != null)
             {
-                _movesView = Instantiate(movesViewPrefab, unit.transform.Find("Canvas").transform);
+                _actionsView = Instantiate(actionsViewPrefab, unit.transform.Find("Canvas").transform);
             }
         }
         else
         {
-            _movesView.SetActive(true);
+            _actionsView.SetActive(true);
         }
 
         if (Camera.main != null)
         {
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            _movesView.transform.position = mousePosition;
+            _actionsView.transform.position = mousePosition;
         }
 
         _unit = unit;
         _isMovesViewActive = true;
+
+        AddButton();
+        AddButton();
+        
+        UpdateActionsViewSize();
     }
 
-    public void HideMovesView()
+    public void HideActionsView()
     {
-        if (_movesView.activeSelf)
+        if (_actionsView.activeSelf)
         {
-            for (int i=0; i<_movesView.transform.childCount; i++)
+            for (int i=0; i<_actionsView.transform.childCount; i++)
             {
-                GameObject child = _movesView.transform.GetChild(i).gameObject;
+                GameObject child = _actionsView.transform.GetChild(i).gameObject;
                 Destroy(child);
             }
 
             _isMovesViewActive = false;
-            _movesView.SetActive(false);
+            _actionsView.SetActive(false);
             _unit.transform.GetComponent<Collider2D>().enabled = true;
         }
     }
@@ -96,5 +104,34 @@ public class CombatHUD : MonoBehaviour
     public bool GetMovesViewActivity()
     {
         return _isMovesViewActive;
+    }
+
+    private void AddButton()
+    {
+        GameObject actionButton = Instantiate(actionButtonPrefab, _actionsView.transform);
+        actionButton.GetComponent<Button>().onClick.AddListener(HideActionsView);
+        //combatButton.transform.GetComponentInChildren<TMP_Text>().text = battleAction.actionName;
+        /*combatButton.GetComponent<Button>().onClick.AddListener(() =>
+        {
+            action?.Invoke(battleAction);
+        });*/
+    }
+    
+    private void UpdateActionsViewSize()
+    {
+        if (!_actionsView) return;
+
+        GridLayoutGroup gridLayout = _actionsView.GetComponent<GridLayoutGroup>();
+        if (!gridLayout) return;
+
+        int childCount = _actionsView.transform.childCount;
+        float buttonHeight = 90f;
+        float paddingTopBottom = gridLayout.padding.top + gridLayout.padding.bottom; // 10 + 10 = 20
+        float spacingY = gridLayout.spacing.y * (childCount - 1); // 5 między elementami
+
+        float newHeight = (childCount * buttonHeight) + paddingTopBottom + spacingY;
+
+        RectTransform rt = _actionsView.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(rt.sizeDelta.x, newHeight);
     }
 }

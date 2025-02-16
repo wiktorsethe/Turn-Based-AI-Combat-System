@@ -192,7 +192,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitViewPrefab: {fileID: 7424217574985575818, guid: 5b8c0a12f68b44b9bb6b4fcefc5221bc, type: 3}
-  movesViewPrefab: {fileID: 5139873420556422750, guid: 097ebafe2d28546fa9717727d855ee52, type: 3}
+  actionsViewPrefab: {fileID: 5139873420556422750, guid: 097ebafe2d28546fa9717727d855ee52, type: 3}
+  actionButtonPrefab: {fileID: 5594347355562621075, guid: 726f4c88e13b346b196f21815aff8586, type: 3}
 --- !u!114 &5741935746465716711
 MonoBehaviour:
   m_ObjectHideFlags: 0
