@@ -14,11 +14,17 @@ public class CombatHUD : MonoBehaviour
     private GameObject _unitView;
     private GameObject _actionsView;
     private CombatUnitHUD _unitHUD;
-    private bool _isMovesViewActive;
-
+    private bool _isActionsViewActive;
+    [SerializeField] private Combat combat;
+    private CombatUnit _playerUnit;
     private void Start()
     {
-        _isMovesViewActive = false;
+        _isActionsViewActive = false;
+    }
+
+    public void SetPlayerUnit(CombatUnit unit)
+    {
+        _playerUnit = unit;
     }
 
     public void ShowUnitView(CombatUnitHUD unit)
@@ -54,7 +60,7 @@ public class CombatHUD : MonoBehaviour
         _unitView.SetActive(false);
     }
 
-    public void ShowActionsView(CombatUnitHUD unit)
+    public void ShowActionsView(CombatUnitHUD unitHUD, CombatUnit unit)
     {
         if(_unitView) _unitView.SetActive(false);
         
@@ -62,7 +68,7 @@ public class CombatHUD : MonoBehaviour
         {
             if (Camera.main != null)
             {
-                _actionsView = Instantiate(actionsViewPrefab, unit.transform.Find("Canvas").transform);
+                _actionsView = Instantiate(actionsViewPrefab, unitHUD.transform.Find("Canvas").transform);
             }
         }
         else
@@ -76,11 +82,30 @@ public class CombatHUD : MonoBehaviour
             _actionsView.transform.position = mousePosition;
         }
 
-        _unitHUD = unit;
-        _isMovesViewActive = true;
+        _unitHUD = unitHUD;
+        _isActionsViewActive = true;
 
-        AddButton();
-        AddButton();
+        if (unit.UnitCategory == UnitType.Player)
+        {
+            foreach (CombatAction action in _playerUnit.Actions)
+            {
+                if(action.type != CombatAction.TypeOfAction.ATTACK) AddButton(action, unit);
+            }
+        }
+        else if (unit.UnitCategory == UnitType.Ally)
+        {
+            foreach (CombatAction action in _playerUnit.Actions)
+            {
+                if(action.type != CombatAction.TypeOfAction.ATTACK) AddButton(action, unit);
+            }
+        }
+        else if(unit.UnitCategory == UnitType.Enemy)
+        {
+            foreach (CombatAction action in _playerUnit.Actions)
+            {
+                if(action.type == CombatAction.TypeOfAction.ATTACK) AddButton(action, unit);
+            }
+        }
         
         UpdateActionsViewSize();
     }
@@ -95,26 +120,26 @@ public class CombatHUD : MonoBehaviour
                 Destroy(child);
             }
 
-            _isMovesViewActive = false;
+            _isActionsViewActive = false;
             _actionsView.SetActive(false);
             _unitHUD.transform.GetComponent<Collider2D>().enabled = true;
         }
     }
     
-    public bool GetMovesViewActivity()
+    public bool GetActionsViewActivity()
     {
-        return _isMovesViewActive;
+        return _isActionsViewActive;
     }
 
-    private void AddButton()
+    private void AddButton(CombatAction action, CombatUnit unit)
     {
+        //TODO: Dokonczyc to
         GameObject actionButton = Instantiate(actionButtonPrefab, _actionsView.transform);
-        actionButton.GetComponent<Button>().onClick.AddListener(HideActionsView);
-        //combatButton.transform.GetComponentInChildren<TMP_Text>().text = battleAction.actionName;
-        /*combatButton.GetComponent<Button>().onClick.AddListener(() =>
+        actionButton.transform.GetComponentInChildren<TMP_Text>().text = action.actionName;
+        actionButton.GetComponent<Button>().onClick.AddListener(() =>
         {
-            action?.Invoke(battleAction);
-        });*/
+            combat.ActionUsage(action, unit);
+        });
     }
     
     private void UpdateActionsViewSize()

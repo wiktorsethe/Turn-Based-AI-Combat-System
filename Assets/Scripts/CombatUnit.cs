@@ -16,22 +16,25 @@ public enum ClassType
     Hunter
 }
 
+[System.Serializable]
 public class CombatUnit
 {
-    public string Name { get; private set; }
-    public UnitType UnitCategory { get; private set; }
-    public ClassType UnitClass { get; private set; }
-    public int Health { get; private set; }
-    public int Attack { get; private set; }
-    public int Defense { get; private set; }
-    public int Speed { get; private set; }
-    
-    public CombatUnit(string name, UnitType unitCategory, ClassType unitClass, int health, int attack)
+    public string Name;
+    public UnitType UnitCategory;
+    public ClassType UnitClass;
+    public int Health;
+    public int Attack;
+    public int Defense;
+    public int Speed;
+    public List<CombatAction> Actions;
+
+    public CombatUnit(string name, UnitType unitCategory, ClassType unitClass, int health, int attack, List<CombatAction> actions)
     {
         Name = name;
         UnitCategory = unitCategory;
         UnitClass = unitClass;
         Health = health;
         Attack = attack;
+        Actions = actions;
     }
 }

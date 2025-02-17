@@ -340,6 +340,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8843813a9298422d86eeeee25ce2b92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  combatUnits:
+  - Name: Player
+    UnitCategory: 0
+    UnitClass: 0
+    Health: 100
+    Attack: 10
+    Defense: 10
+    Speed: 10
+    Actions:
+    - {fileID: 11400000, guid: 9c0715a3aab084da7ae966c66e004d2d, type: 2}
+    - {fileID: 11400000, guid: 13a4019e4ee924ce589761cebb03c680, type: 2}
+    - {fileID: 11400000, guid: a9dfa736410714d01828180329b147d1, type: 2}
+  - Name: Ally1
+    UnitCategory: 1
+    UnitClass: 0
+    Health: 100
+    Attack: 10
+    Defense: 10
+    Speed: 10
+    Actions:
+    - {fileID: 11400000, guid: 9c0715a3aab084da7ae966c66e004d2d, type: 2}
+    - {fileID: 11400000, guid: a9dfa736410714d01828180329b147d1, type: 2}
+  - Name: Ally2
+    UnitCategory: 1
+    UnitClass: 1
+    Health: 100
+    Attack: 10
+    Defense: 10
+    Speed: 10
+    Actions:
+    - {fileID: 11400000, guid: e532eb0de07ef463182181b8391ab28c, type: 2}
+  - Name: Enemy1
+    UnitCategory: 2
+    UnitClass: 0
+    Health: 100
+    Attack: 10
+    Defense: 10
+    Speed: 10
+    Actions:
+    - {fileID: 11400000, guid: 9c0715a3aab084da7ae966c66e004d2d, type: 2}
+  - Name: Enemy2
+    UnitCategory: 2
+    UnitClass: 2
+    Health: 100
+    Attack: 10
+    Defense: 10
+    Speed: 10
+    Actions:
+    - {fileID: 11400000, guid: 9c0715a3aab084da7ae966c66e004d2d, type: 2}
 --- !u!4 &217202021
 Transform:
   m_ObjectHideFlags: 0
@@ -1141,7 +1190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   combatHUD: {fileID: 7284011144441932186}
-  unitPrefab: {fileID: 0}
+  unitHUDPrefab: {fileID: 0}
 --- !u!1 &6973854691611821256
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,6 +1337,7 @@ MonoBehaviour:
   unitViewPrefab: {fileID: 1957989809347821662, guid: cc566ac4a53074c50bc3c652110bb011, type: 3}
   actionsViewPrefab: {fileID: 0}
   actionButtonPrefab: {fileID: 0}
+  combat: {fileID: 0}
 --- !u!1 &7719282340726904378
 GameObject:
   m_ObjectHideFlags: 0

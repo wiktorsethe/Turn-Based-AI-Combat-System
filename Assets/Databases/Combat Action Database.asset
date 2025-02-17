@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-395293738177316972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66421ac586eb644caaa4455092f9c34d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  actionName: 
+  healAmount: 0
+  attackAmount: 0
+  defensePower: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0d231525ddbe4c95aef8df148a33bcf, type: 3}
+  m_Name: Combat Action Database
+  m_EditorClassIdentifier: 
+  allActions:
+  - {fileID: 11400000, guid: 9c0715a3aab084da7ae966c66e004d2d, type: 2}
+  - {fileID: 11400000, guid: 13a4019e4ee924ce589761cebb03c680, type: 2}

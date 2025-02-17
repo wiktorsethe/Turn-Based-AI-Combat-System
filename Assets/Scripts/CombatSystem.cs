@@ -36,6 +36,5 @@ public class CombatSystem : MonoBehaviour
         }
         
         _combat.SpawnUnits(playerTeam, enemyTeam);
-        //_combat.SpawnUnit(combatUnits[0]); //TODO: wystawic wszystkich z listy podzielonych na miejsca i druzyny
     }
 }

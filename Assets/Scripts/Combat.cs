@@ -53,6 +53,7 @@ public class Combat : MonoBehaviour
 
         for (int i = 0; i < units.Count; i++)
         {
+
             float xOffset = i * XSpacing;
             float xPos = isPlayerSide ? startX + xOffset : startX - xOffset;
             
@@ -62,7 +63,22 @@ public class Combat : MonoBehaviour
 
             _unitHUD = Instantiate(unitHUDPrefab, spawnPos, Quaternion.identity);
             _unitHUD.GetComponent<CombatUnitHUD>().Initialize(units[i]); // Przypisanie HUD
+            if(units[i].UnitCategory == UnitType.Player) combatHUD.SetPlayerUnit(units[i]);
         }
     }
-
+    
+    public void ActionUsage(CombatAction action, CombatUnit unit)
+    {
+        //TODO: dokonczyc to
+        
+        // if(action.type == CombatAction.TypeOfAction.ATTACK) 
+        //     unit.Health -= action.attackAmount;
+        // else if (action.type == CombatAction.TypeOfAction.SUPPORT)
+        //     unit.Health += action.healAmount;
+        // else if (action.type == CombatAction.TypeOfAction.DEFEND)
+        //     // Do dokończenia, prawdopodobnie od ataku przeciwnika bedzie odejmowana połowa mocy obrony
+        //     unit.Health += action.defensePower;
+        //_battleSystem.SetPlayerTurn(action);
+        combatHUD.HideActionsView();
+    }
 }

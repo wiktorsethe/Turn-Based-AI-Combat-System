@@ -31,9 +31,9 @@ public class CombatUnitHUD : MonoBehaviour
     
     private void OnMouseDown()
     {
-        if(_combatHUD.GetMovesViewActivity()) 
+        if(_combatHUD.GetActionsViewActivity()) 
             _combatHUD.HideUnitView();
-        _combatHUD.ShowActionsView(this); //TODO: tutaj bedzie trzeba dodac CombatUnit bo nie bedzie wiadomo jakie ataki
+        _combatHUD.ShowActionsView(this, AssignedUnit);
         GetComponent<Collider2D>().enabled = false;
     }
 }
