@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Big attack
   m_EditorClassIdentifier: 
   type: 0
-  actionName: 
+  actionName: Big attack
   healAmount: 0
-  attackAmount: 0
+  attackAmount: 10
   defensePower: 0

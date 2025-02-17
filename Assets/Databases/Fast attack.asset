@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Fast attack
   m_EditorClassIdentifier: 
   type: 0
-  actionName: 
+  actionName: Fast attack
   healAmount: 0
-  attackAmount: 0
+  attackAmount: 5
   defensePower: 0

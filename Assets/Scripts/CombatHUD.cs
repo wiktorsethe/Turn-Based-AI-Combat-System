@@ -17,14 +17,12 @@ public class CombatHUD : MonoBehaviour
     private bool _isActionsViewActive;
     [SerializeField] private Combat combat;
     private CombatUnit _playerUnit;
+    [SerializeField] private Text combatLogContent;
+    [SerializeField] private Scrollbar scrollbar;
+    [SerializeField] private TMP_Text playerTurnTimer;
     private void Start()
     {
         _isActionsViewActive = false;
-    }
-
-    public void SetPlayerUnit(CombatUnit unit)
-    {
-        _playerUnit = unit;
     }
 
     public void ShowUnitView(CombatUnitHUD unit)
@@ -52,7 +50,7 @@ public class CombatHUD : MonoBehaviour
         _unitView.transform.Find("UnitNameText").GetComponent<TMP_Text>().text =
             unit.AssignedUnit.Name;
         _unitView.transform.Find("UnitHPText").GetComponent<TMP_Text>().text =
-            unit.AssignedUnit.Health + "/" + unit.AssignedUnit.Health; //TODO: zalatwic sprawe currentHealth
+            PlayerPrefs.GetInt($"{unit.AssignedUnit.Name}Health") + "/" + unit.AssignedUnit.Health; //TODO: zalatwic sprawe currentHealth
     }
     
     public void HideUnitView()
@@ -87,21 +85,21 @@ public class CombatHUD : MonoBehaviour
 
         if (unit.UnitCategory == UnitType.Player)
         {
-            foreach (CombatAction action in _playerUnit.Actions)
+            foreach (CombatAction action in combat.playerUnit.Actions)
             {
                 if(action.type != CombatAction.TypeOfAction.ATTACK) AddButton(action, unit);
             }
         }
         else if (unit.UnitCategory == UnitType.Ally)
         {
-            foreach (CombatAction action in _playerUnit.Actions)
+            foreach (CombatAction action in combat.playerUnit.Actions)
             {
                 if(action.type != CombatAction.TypeOfAction.ATTACK) AddButton(action, unit);
             }
         }
         else if(unit.UnitCategory == UnitType.Enemy)
         {
-            foreach (CombatAction action in _playerUnit.Actions)
+            foreach (CombatAction action in combat.playerUnit.Actions)
             {
                 if(action.type == CombatAction.TypeOfAction.ATTACK) AddButton(action, unit);
             }
@@ -158,5 +156,23 @@ public class CombatHUD : MonoBehaviour
 
         RectTransform rt = _actionsView.GetComponent<RectTransform>();
         rt.sizeDelta = new Vector2(rt.sizeDelta.x, newHeight);
+    }
+    
+    public void AppendMessage(string message)
+    {
+        StartCoroutine(AppendAndScroll(message));
+    }
+    
+    private IEnumerator AppendAndScroll(string message)
+    {
+        combatLogContent.text += message + "\n";
+
+        yield return null;
+        scrollbar.value = 1;
+    }
+    
+    public void SetPlayerTurnTimer(int sec)
+    {
+        playerTurnTimer.text = "Waiting " + (15 - sec) + " sec. for player's turn...";
     }
 }
