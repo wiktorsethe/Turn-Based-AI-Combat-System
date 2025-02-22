@@ -122,6 +122,40 @@ public class Combat : MonoBehaviour
             SetEnemyTurn();
         }
     }
+
+    //TODO: DOKONCZ
+    private void SetAllyTurn()
+    {
+        StartCoroutine(AllyTurn());
+    }
+
+    private IEnumerator AllyTurn()
+    {
+        foreach (var ally in _allies)
+        {
+            if (PlayerPrefs.GetInt($"{ally.Name}Health") <= 0 || ally.UnitCategory == UnitType.Player)
+                continue; // Jeśli sojusznik jest martwy lub jest graczem, pomijamy jego turę
+
+            Debug.Log("<color=yellow>----- Tura Sojusznika -----</color>");
+
+            var aliveEnemies = _enemies.Where(enemy => PlayerPrefs.GetInt($"{enemy.Name}Health") > 0 && enemy.UnitCategory != UnitType.Player).ToList();
+
+            if (aliveEnemies.Count == 0)
+                continue; // Jeśli nie ma dostępnych celów, pomijamy turę sojusznika
+
+            CombatUnit target = aliveEnemies[Random.Range(0, aliveEnemies.Count)];
+            CombatAction allyAction = ally.Actions[0]; // Można dodać AI wybierające akcję
+
+            PlayerPrefs.SetInt($"{target.Name}Health", PlayerPrefs.GetInt($"{target.Name}Health") - allyAction.attackAmount);
+            combatHUD.AppendMessage($"{ally.Name} used {allyAction.actionName} and deals {allyAction.attackAmount} damage to {target.Name}.");
+
+            yield return new WaitForSeconds(1f); // Krótka przerwa między atakami
+        }
+
+        battleState = CombatState.ENEMYTURN;
+        StartCoroutine(EnemyTurn());
+    }
+
     
     //TODO: zrobic zeby kazdy z druzuny przeciwnej atakowal
     private void SetEnemyTurn()
