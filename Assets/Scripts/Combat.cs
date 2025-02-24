@@ -7,6 +7,7 @@ public enum CombatState
 {
     START,
     PLAYERTURN,
+    ALLYTURN,
     ENEMYTURN,
     WON,
     LOST
@@ -91,39 +92,38 @@ public class Combat : MonoBehaviour
                     {
                         combatHUD.AppendMessage(playerUnit.Name + " used " + actionUsed.actionName +
                                                 " and takes: " + actionUsed.attackAmount + " points of " +
-                                                targetUnit.Name + " health.");
+                                                targetUnit.Name + " health.", "green");
                     }
                     else if (actionUsed.type == CombatAction.TypeOfAction.SUPPORT)
                     {
                         combatHUD.AppendMessage(playerUnit.Name + " used " + actionUsed.actionName +
                                                 " and receives: " + actionUsed.healAmount + 
-                                                " points of health.");
+                                                " points of health.", "green");
                     }
                     else if (actionUsed.type == CombatAction.TypeOfAction.DEFEND)
                     {
                         combatHUD.AppendMessage(playerUnit.Name + " used " + actionUsed.actionName +
                                                 " and receives: " + actionUsed.defensePower + 
-                                                " points of shield.");
+                                                " points of shield.", "green");
                     }
 
                     // Po użyciu akcji usuwamy ją ze słownika
                     _playerActionUsed.Remove(actionUsed);
                 }
 
-                battleState = CombatState.ENEMYTURN;
-                SetEnemyTurn();
+                battleState = CombatState.ALLYTURN;
+                SetAllyTurn();
                 yield break;
             }
 
         
             yield return null;
             Debug.LogWarning("<color=red>Tura zmarnowana!</color>");
-            battleState = CombatState.ENEMYTURN;
-            SetEnemyTurn();
+            battleState = CombatState.ALLYTURN;
+            SetAllyTurn();
         }
     }
 
-    //TODO: DOKONCZ
     private void SetAllyTurn()
     {
         StartCoroutine(AllyTurn());
@@ -147,17 +147,16 @@ public class Combat : MonoBehaviour
             CombatAction allyAction = ally.Actions[0]; // Można dodać AI wybierające akcję
 
             PlayerPrefs.SetInt($"{target.Name}Health", PlayerPrefs.GetInt($"{target.Name}Health") - allyAction.attackAmount);
-            combatHUD.AppendMessage($"{ally.Name} used {allyAction.actionName} and deals {allyAction.attackAmount} damage to {target.Name}.");
+            combatHUD.AppendMessage($"{ally.Name} used {allyAction.actionName} and deals {allyAction.attackAmount} damage to {target.Name}.", "yellow");
 
             yield return new WaitForSeconds(1f); // Krótka przerwa między atakami
         }
 
         battleState = CombatState.ENEMYTURN;
-        StartCoroutine(EnemyTurn());
+        SetEnemyTurn();
     }
 
     
-    //TODO: zrobic zeby kazdy z druzuny przeciwnej atakowal
     private void SetEnemyTurn()
     {
         bool anyAlive = _enemies.Any(unit => PlayerPrefs.GetInt($"{unit.Name}Health") > 0);
@@ -187,7 +186,7 @@ public class Combat : MonoBehaviour
             CombatAction enemyAction = enemy.Actions[0]; // Można dodać AI wybierające akcję
 
             PlayerPrefs.SetInt($"{target.Name}Health", PlayerPrefs.GetInt($"{target.Name}Health") - enemyAction.attackAmount);
-            combatHUD.AppendMessage($"{enemy.Name} used {enemyAction.actionName} and deals {enemyAction.attackAmount} damage to {target.Name}.");
+            combatHUD.AppendMessage($"{enemy.Name} used {enemyAction.actionName} and deals {enemyAction.attackAmount} damage to {target.Name}.", "red");
 
             yield return new WaitForSeconds(1f); // Krótka przerwa między atakami
         }

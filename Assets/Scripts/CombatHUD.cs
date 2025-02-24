@@ -158,14 +158,14 @@ public class CombatHUD : MonoBehaviour
         rt.sizeDelta = new Vector2(rt.sizeDelta.x, newHeight);
     }
     
-    public void AppendMessage(string message)
+    public void AppendMessage(string message, string color = "white")
     {
-        StartCoroutine(AppendAndScroll(message));
+        StartCoroutine(AppendAndScroll(message, color));
     }
-    
-    private IEnumerator AppendAndScroll(string message)
+
+    private IEnumerator AppendAndScroll(string message, string color)
     {
-        combatLogContent.text += message + "\n";
+        combatLogContent.text += $"<color={color}>{message}</color>\n";
 
         yield return null;
         scrollbar.value = 1;
