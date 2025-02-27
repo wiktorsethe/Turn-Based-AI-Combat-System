@@ -111,6 +111,8 @@ public class Combat : MonoBehaviour
                     _playerActionUsed.Remove(actionUsed);
                 }
 
+                yield return new WaitForSeconds(1f);
+                
                 battleState = CombatState.ALLYTURN;
                 SetAllyTurn();
                 yield break;

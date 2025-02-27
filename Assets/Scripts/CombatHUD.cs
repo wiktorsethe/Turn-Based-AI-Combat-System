@@ -168,7 +168,7 @@ public class CombatHUD : MonoBehaviour
         combatLogContent.text += $"<color={color}>{message}</color>\n";
 
         yield return null;
-        scrollbar.value = 1;
+        scrollbar.value = 0;
     }
     
     public void SetPlayerTurnTimer(int sec)
