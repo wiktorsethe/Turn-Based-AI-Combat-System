@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum CombatState
 {
@@ -34,6 +36,8 @@ public class Combat : MonoBehaviour
     
     private List<CombatUnit> _enemies = new List<CombatUnit>();
     private List<CombatUnit> _allies = new List<CombatUnit>();
+    
+    public List<CombatUnit> _turnQueue = new List<CombatUnit>();
     private void Start()
     {
         battleState = CombatState.START;
@@ -47,9 +51,51 @@ public class Combat : MonoBehaviour
         _allies = playerTeam;
         _enemies = enemyTeam;
         
+        _turnQueue = GenerateTurnOrder();
+
+        int x = 0;
+        foreach (CombatUnit unit in _turnQueue)
+        {
+            x++;
+            Debug.Log(x + ". " + unit.Name);
+        }
+        
         combatHUD.AppendMessage($"The fight between {playerUnits} and {enemyUnits} begins!");
         battleState = CombatState.PLAYERTURN;
         StartCoroutine(PlayerTurn());
+    }
+    
+    private List<CombatUnit> GenerateTurnOrder(int cycleSize = 10)
+    {
+        List<CombatUnit> allUnits = _allies.Concat(_enemies).ToList();
+
+        List<CombatUnit> turnOrder = new List<CombatUnit>();
+        
+        // Znajdź największą wartość Speed, aby normalizować do niej
+        float maxSpeed = allUnits.Max(u => u.Speed);
+        
+        // Tworzymy listę kolejek na podstawie proporcji Speed
+        Dictionary<CombatUnit, int> unitTurns = new Dictionary<CombatUnit, int>();
+        
+        foreach (var unit in allUnits)
+        {
+            int turns = (int)Math.Round((unit.Speed / maxSpeed) * cycleSize);
+            unitTurns[unit] = Math.Max(turns, 1); // Zapewniamy, że każda jednostka ma co najmniej 1 turę
+        }
+        
+        // Dodawanie jednostek do kolejki tury
+        foreach (var unit in unitTurns)
+        {
+            for (int i = 0; i < unit.Value; i++)
+            {
+                turnOrder.Add(unit.Key);
+            }
+        }
+        
+        // Sortowanie losowe, aby uniknąć powtarzalnych wzorców
+        turnOrder = turnOrder.OrderBy(x => Guid.NewGuid()).ToList();
+        
+        return turnOrder;
     }
 
     private void SetPlayerTurn(CombatAction action, CombatUnit unit)
@@ -63,7 +109,7 @@ public class Combat : MonoBehaviour
         if (PlayerPrefs.GetInt($"{playerUnit.Name}Health") <= 0)
         {
             battleState = CombatState.LOST;
-            //LostTurn();
+            LostTurn();
             yield return null;
         }
         else
@@ -92,19 +138,19 @@ public class Combat : MonoBehaviour
                     {
                         combatHUD.AppendMessage(playerUnit.Name + " used " + actionUsed.actionName +
                                                 " and takes: " + actionUsed.attackAmount + " points of " +
-                                                targetUnit.Name + " health.", "green");
+                                                targetUnit.Name + " health.", "lime");
                     }
                     else if (actionUsed.type == CombatAction.TypeOfAction.SUPPORT)
                     {
                         combatHUD.AppendMessage(playerUnit.Name + " used " + actionUsed.actionName +
                                                 " and receives: " + actionUsed.healAmount + 
-                                                " points of health.", "green");
+                                                " points of health.", "lime");
                     }
                     else if (actionUsed.type == CombatAction.TypeOfAction.DEFEND)
                     {
                         combatHUD.AppendMessage(playerUnit.Name + " used " + actionUsed.actionName +
                                                 " and receives: " + actionUsed.defensePower + 
-                                                " points of shield.", "green");
+                                                " points of shield.", "lime");
                     }
 
                     // Po użyciu akcji usuwamy ją ze słownika
@@ -166,7 +212,7 @@ public class Combat : MonoBehaviour
         if (!anyAlive) 
         {
             battleState = CombatState.WON;
-            //WinTurn();
+            WinTurn();
             return;
         }
         
@@ -195,6 +241,20 @@ public class Combat : MonoBehaviour
 
         battleState = CombatState.PLAYERTURN;
         StartCoroutine(PlayerTurn());
+    }
+
+    private void WinTurn()
+    {
+        string playerUnits = string.Join(", ", _allies.Select(u => u.Name));
+        
+        combatHUD.AppendMessage($"{playerUnits} won the battle!");
+    }
+    
+    private void LostTurn()
+    {
+        string enemyUnits = string.Join(", ", _enemies.Select(u => u.Name));
+        
+        combatHUD.AppendMessage($"{enemyUnits} won the battle!");
     }
     
     public void SpawnUnits(List<CombatUnit> playerTeam, List<CombatUnit> enemyTeam)
